@@ -1,4 +1,6 @@
 {
+  "name": "react-form-ts",
+  "version": "0.0.1",
   "devDependencies": {
     "@types/chai": "^4.1.4",
     "@types/mocha": "^5.2.5",
