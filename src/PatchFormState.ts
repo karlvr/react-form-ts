@@ -1,0 +1,141 @@
+import { FormState } from './FormState'
+
+/**
+ * A class to assist with a form that creates a patch request for an object.
+ * 
+ * SOURCE is the type of the original object. PATCH is the type of the patch request, which
+ * should have every property as optional.
+ * 
+ * This object is immutable, so it is suitable to be put into a React component state.
+ */
+
+type Combined<SOURCE, PATCH> = {
+	[P in keyof SOURCE & keyof PATCH]: SOURCE[P] & PATCH[P]
+}
+
+type ArrayProperties<T> = {
+	[P in keyof T]: T[P] extends (infer R)[] ? R
+	: never
+}
+
+export class PatchFormState<SOURCE, PATCH> {
+
+	private source: SOURCE
+	private patch: PATCH
+
+	constructor(source: SOURCE, patch: PATCH) {
+		this.source = source
+		this.patch = patch
+	}
+
+	/**
+	 * Return the value of the given property from the patch, or from the source.
+	 * @param name Property name
+	 */
+	get<PROPERTY extends keyof Combined<SOURCE, PATCH>>(name: PROPERTY, defaultValue?: Combined<SOURCE, PATCH>[PROPERTY]): Combined<SOURCE, PATCH>[PROPERTY] {
+		const value = this.patch[name]
+		if (value !== undefined) {
+			return value as Combined<SOURCE, PATCH>[PROPERTY]
+		}
+
+		const sourceValue = this.source[name] as {} as PATCH[PROPERTY]
+		if (sourceValue !== undefined) {
+			return sourceValue as Combined<SOURCE, PATCH>[PROPERTY]
+		}
+
+		if (defaultValue !== undefined) {
+			return defaultValue
+		}
+
+		return value
+	}
+
+	/**
+	 * Return a new form state with the value of the given property set in the patch. If the patch value exactly
+	 * matches the source value, the value in the patch is cleared.
+	 * @param name Property name
+	 * @param value New value
+	 */
+	set<PROPERTY extends keyof Combined<SOURCE, PATCH>>(name: PROPERTY, value: Combined<SOURCE, PATCH>[PROPERTY] | undefined): PatchFormState<SOURCE, PATCH> {
+		if (value === this.source[name]) {
+			value = undefined
+		}
+		const patch = { ...(this.patch as {}), [name]: value } as PATCH
+		return new PatchFormState<SOURCE, PATCH>(this.source, patch)
+	}
+
+	apply(func: (form: Combined<SOURCE, PATCH>) => Combined<SOURCE, PATCH>): PatchFormState<SOURCE, PATCH> {
+		let form = this.getValues()
+		form = func(form)
+		return new PatchFormState<SOURCE, PATCH>(this.source, form as {} as PATCH)
+	}
+
+	/**
+	 * Return a new form state with the values from the given patch merged in to this state.
+	 * @param other A patch object
+	 */
+	merge(other: Combined<SOURCE, PATCH>): PatchFormState<SOURCE, PATCH> {
+		let patch = this.getValues()
+		for (let k in other) {
+			if (other.hasOwnProperty(k)) {
+				(patch as any)[k] = (other as any)[k]
+			}
+		}
+
+		return new PatchFormState<SOURCE, PATCH>(this.source, patch as {} as PATCH)
+	}
+
+	/**
+	 * Returns a copy of the current patch state.
+	 */
+	getValues(): Combined<SOURCE, PATCH> {
+		return { ...(this.patch as {}) } as Combined<SOURCE, PATCH>
+	}
+
+	/**
+	 * Returns true if the patch is empty.
+	 */
+	isEmpty(): boolean {
+		for (let k in this.patch) {
+			if (this.patch.hasOwnProperty(k)) {
+				if (this.patch[k] !== undefined) {
+					return false
+				}
+			}
+		}
+		return true
+	}
+
+	sub<SUBSOURCE, SUBPATCH>(func: (form: Combined<SOURCE, PATCH>) => Combined<SUBSOURCE, SUBPATCH>): PatchFormState<SUBSOURCE, SUBPATCH> {
+		const patch = this.getValues()
+		const source = { ...(this.source as {})} as SOURCE
+		const subsource = func(source as {} as Combined<SOURCE, PATCH>) as {} as SUBSOURCE
+		const subpatch = func(patch) as {} as SUBPATCH
+		return new PatchFormState(subsource, subpatch)
+	}
+
+	subProperty<P extends keyof Combined<SOURCE, PATCH>>(name: P): PatchFormState<SOURCE[P], Required<PATCH>[P]> {
+		const form = this.getValues()
+		return new PatchFormState(this.source[name], form[name] || {})
+	}
+
+	subIndexProperty<P extends keyof ArrayProperties<Combined<SOURCE, PATCH>>>(name: P, index: number): PatchFormState<ArrayProperties<SOURCE>[P], ArrayProperties<Required<PATCH>>[P]> {
+		const form = this.getValues()
+		const formArray = form[name] as any as Array<ArrayProperties<Combined<SOURCE, PATCH>>[P]>
+		const sourceArray = this.source[name] as any as Array<ArrayProperties<SOURCE>[P]>
+		return new PatchFormState(sourceArray[index], formArray !== undefined ? formArray[index]: {} as any)
+	}
+
+	mergeProperty<P extends keyof Combined<SOURCE, PATCH>>(name: P, values: Combined<SOURCE, PATCH>[P]): PatchFormState<SOURCE, PATCH> {
+		const merge = { [name]: values } as {} as Combined<SOURCE, PATCH>
+		return this.merge(merge)
+	}
+
+	mergeIndexProperty<P extends keyof ArrayProperties<Combined<SOURCE, PATCH>>>(name: P, index: number, values: ArrayProperties<Combined<SOURCE, PATCH>>[P]): PatchFormState<SOURCE, PATCH> {
+		const array = this.patch[name] !== undefined ? [...this.patch[name] as any as Array<ArrayProperties<Combined<SOURCE, PATCH>>[P]>] : []
+		const merge = { [name]: array } as {} as Combined<SOURCE, PATCH>
+		array[index] = values
+		return this.merge(merge)
+	}
+
+}
