@@ -1,6 +1,6 @@
 {
   "name": "react-form-ts",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A library for react forms in TypeScript",
   "author": "Karl von Randow",
   "license": "Apache-2.0",
@@ -16,13 +16,14 @@
     "ts-node": "^7.0.0",
     "typescript": "^2.9.2"
   },
-  "dependencies": {
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1"
+  "peerDependencies": {
+    "react": "^16.2",
+    "react-dom": "^16.2"
   },
   "scripts": {
     "build": "tsc",
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "prepublish": "npm run build"
   }
 }
