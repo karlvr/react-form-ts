@@ -6,7 +6,7 @@ interface OwnProps<INFORM, OUTFORM> {
 	formState: FormState<INFORM>
 	onNewFormState: (newState: FormState<INFORM>) => void
 
-	chooseFormState: (values: INFORM) => FormState<OUTFORM>
+	chooseFormState: (formState: FormState<INFORM>) => FormState<OUTFORM>
 	applyNewFormState: (formState: FormState<INFORM>, newFormState: FormState<OUTFORM>) => FormState<INFORM>
 	
 	render: (formState: FormState<OUTFORM>, onNewFormState: (newState: FormState<OUTFORM>) => void) => JSX.Element
@@ -20,7 +20,7 @@ export default class Scope<INFORM, OUTFORM> extends React.Component<OwnProps<INF
 	}
 
 	render() {
-		const formState = this.props.chooseFormState(this.props.formState.getValues())
+		const formState = this.props.chooseFormState(this.props.formState)
 		return this.props.render(formState, this.onNewFormState)
 	}
 }
