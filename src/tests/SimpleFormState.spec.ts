@@ -34,7 +34,7 @@ describe('SimpleFormState tests', () => {
 		expect(fsa.getValues()).to.deep.equal(a)
 	})
 
-	it('SimpleFormState should not be mutable', () => {
+	it('should not be mutable', () => {
 		const fsa = new SimpleFormState(a)
 		const fsa2 = fsa.set('name', 'Changed')
 		expect(fsa.getValues()).to.deep.equal(a)
@@ -42,7 +42,7 @@ describe('SimpleFormState tests', () => {
 		expect(fsa2.getValues().name).to.equal('Changed')
 	})
 
-	it('SimpleFormState object subs should not be mutable', () => {
+	it('object subs should not be mutable', () => {
 		const fsa = new SimpleFormState(a)
 		const fsa2 = fsa.subProperty('c')
 		const fsa3 = fsa2.set('contents', 'Changed')
@@ -52,7 +52,7 @@ describe('SimpleFormState tests', () => {
 		expect(fsa3.getValues().contents).to.equal('Changed')
 	})
 
-	it('SimpleFormState object sub should merge', () => {
+	it('object sub should merge', () => {
 		const fsa = new SimpleFormState(a)
 		const fsa2 = fsa.subProperty('c')
 		const fsa3 = fsa2.set('contents', 'Changed')
@@ -64,7 +64,7 @@ describe('SimpleFormState tests', () => {
 		expect(fsa4.getValues().c.contents).to.equal('Changed')
 	})
 
-	it('SimpleFormState array subs should not be mutable', () => {
+	it('array subs should not be mutable', () => {
 		const fsa = new SimpleFormState(a)
 		const fsa2 = fsa.subIndexProperty('bs', 0)
 		const fsa3 = fsa2.set('title', 'Changed')
@@ -75,7 +75,7 @@ describe('SimpleFormState tests', () => {
 		expect(fsa3.getValues().title).to.equal('Changed')
 	})
 
-	it('SimpleFormState array sub should merge', () => {
+	it('array sub should merge', () => {
 		const fsa = new SimpleFormState(a)
 		const fsa2 = fsa.subIndexProperty('bs', 0)
 		const fsa3 = fsa2.set('title', 'Changed')
@@ -87,7 +87,7 @@ describe('SimpleFormState tests', () => {
 		expect(fsa4.getValues().bs[0].title).to.equal('Changed')
 	})
 
-	it('SimpleFormState push', () => {
+	it('push', () => {
 		const fsa = new SimpleFormState(a)
 		const fsa2 = fsa.push('bs', {
 			title: 'Pushed',
@@ -98,7 +98,7 @@ describe('SimpleFormState tests', () => {
 		expect(fsa2.getValues().bs.length).to.equal(2)
 	})
 
-	it('SimpleFormState push from empty', () => {
+	it('push from empty', () => {
 		const a: A = {
 			name: 'My name',
 			bs: [],

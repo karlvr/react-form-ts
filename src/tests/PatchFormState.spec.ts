@@ -51,7 +51,7 @@ describe('PatchFormState tests', () => {
 		expect(fsa.getValues()).to.deep.equal({})
 	})
 
-	it('PatchFormState should not be mutable', () => {
+	it('should not be mutable', () => {
 		const fsa = new PatchFormState(a, aa)
 		const fsa2 = fsa.set('name', 'Changed')
 		expect(fsa.getValues()).to.deep.equal({})
@@ -59,7 +59,7 @@ describe('PatchFormState tests', () => {
 		expect(fsa2.getValues().name).to.equal('Changed')
 	})
 
-	it('PatchFormState object subs should not be mutable', () => {
+	it('object subs should not be mutable', () => {
 		const fsa = new PatchFormState(a, aa)
 		const fsa2 = fsa.subProperty('c')
 		const fsa3 = fsa2.set('contents', 'Changed')
@@ -69,7 +69,7 @@ describe('PatchFormState tests', () => {
 		expect(fsa3.getValues().contents).to.equal('Changed')
 	})
 
-	it('PatchFormState object sub should merge', () => {
+	it('object sub should merge', () => {
 		const fsa = new PatchFormState(a, aa)
 		const fsa2 = fsa.subProperty('c')
 		const fsa3 = fsa2.set('contents', 'Changed')
@@ -81,7 +81,7 @@ describe('PatchFormState tests', () => {
 		expect(fsa4.getValues().c.contents).to.equal('Changed')
 	})
 
-	it('PatchFormState array subs should not be mutable', () => {
+	it('array subs should not be mutable', () => {
 		const fsa = new PatchFormState(a, aa)
 		const fsa2 = fsa.subIndexProperty('bs', 0)
 		const fsa3 = fsa2.set('title', 'Changed')
@@ -92,7 +92,7 @@ describe('PatchFormState tests', () => {
 		expect(fsa3.getValues().title).to.equal('Changed')
 	})
 
-	it('PatchFormState array sub should merge', () => {
+	it('array sub should merge', () => {
 		const fsa = new PatchFormState(a, aa)
 		const fsa2 = fsa.subIndexProperty('bs', 0)
 		const fsa3 = fsa2.set('title', 'Changed')

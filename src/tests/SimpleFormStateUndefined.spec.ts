@@ -35,7 +35,7 @@ describe('SimpleFormState undefined tests', () => {
 		expect(fsa.getValues()).to.deep.equal(a)
 	})
 
-	it('SimpleFormState should not be mutable', () => {
+	it('should not be mutable', () => {
 		const fsa = new SimpleFormState(a)
 		const fsa2 = fsa.set('name', 'Changed')
 		expect(fsa.getValues()).to.deep.equal(a)
@@ -43,7 +43,7 @@ describe('SimpleFormState undefined tests', () => {
 		expect(fsa2.getValues().name).to.equal('Changed')
 	})
 
-	it('SimpleFormState object subs', () => {
+	it('object subs', () => {
 		const fsa = new SimpleFormState(a)
 		const fsa2 = fsa.subProperty('c')
 		expect(fsa2).to.be.undefined
@@ -62,7 +62,7 @@ describe('SimpleFormState undefined tests', () => {
 		expect(fsa5.getValues()).to.deep.equal({ contents: 'Changed' })
 	})
 
-	it('SimpleFormState object sub should merge', () => {
+	it('object sub should merge', () => {
 		const fsa = new SimpleFormState(a)
 		const fsa2 = new SimpleFormState<C>({ contents: 'Original' })
 		const fsa3 = fsa2.set('contents', 'Changed')
