@@ -8,10 +8,12 @@ interface OwnProps<FORM, P extends ArrayKeys<FORM>> {
 	start?: number
 	howMany?: number
 	onNewFormState: (newState: FormState<FORM>) => void
-	render: (info: ListIterationInfo, formState: FormState<ArrayProperties<FORM>[P]>, onNewFormState: (newState: FormState<ArrayProperties<FORM>[P]>) => void) => React.ReactNode
+	render: (info: ListIterationInfo, formState: FormState<ArrayProperties<FORM>[P]>, 
+		onNewFormState: (newState: FormState<ArrayProperties<FORM>[P]>, name: keyof ArrayProperties<FORM>[P]) => void) => React.ReactNode
 	renderBefore?: () => React.ReactNode
 	renderAfter?: () => React.ReactNode
 	renderEmpty?: () => React.ReactNode
+	processChange?: (index: number, newState: ArrayProperties<FORM>[P], name: keyof ArrayProperties<FORM>[P]) => ArrayProperties<FORM>[P] | undefined
 }
 
 export interface ListIterationInfo {
@@ -23,8 +25,16 @@ export interface ListIterationInfo {
 
 export default class List<FORM, P extends ArrayKeys<FORM>> extends React.Component<OwnProps<FORM, P>> {
 
-	onNewFormState = (index: number, newState: FormState<ArrayProperties<FORM>[P]>) => {
-		this.props.onNewFormState(this.props.formState.mergeIndexProperty(this.props.name, index, newState.getValues()))
+	onNewFormState = (index: number, newState: FormState<ArrayProperties<FORM>[P]>, name: keyof ArrayProperties<FORM>[P]) => {
+		let values = newState.getValues()
+		if (this.props.processChange) {
+			const processedValues = this.props.processChange(index, values, name)
+			if (!processedValues) {
+				return
+			}
+			values = processedValues
+		}
+		this.props.onNewFormState(this.props.formState.mergeIndexProperty(this.props.name, index, values))
 	}
 
 	render() {
