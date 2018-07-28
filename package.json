@@ -22,6 +22,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "clean": "rm -rf dist",
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
     "watch": "tsc --watch",
     "prepublish": "npm run build"
