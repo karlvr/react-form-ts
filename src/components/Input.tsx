@@ -7,7 +7,7 @@ type ElementAttributes = React.InputHTMLAttributes<HTMLInputElement>
 interface OwnProps<FORM> extends Omit<ElementAttributes, 'name' | 'value' | 'onChange'> {
 	name: keyof FORM & string
 	formState: FormState<FORM>
-	onNewFormState: (newState: FormState<FORM>) => void
+	onNewFormState: (newState: FormState<FORM>, name: keyof FORM) => void
 }
 
 type ElementValueType = ElementAttributes['value']
@@ -15,7 +15,9 @@ type ElementValueType = ElementAttributes['value']
 export default class Input<FORM> extends React.Component<OwnProps<FORM>> {
 
 	onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-		this.props.onNewFormState(this.props.formState.set(evt.target.name as {} as keyof FORM, evt.target.value as {} as FORM[keyof FORM]))
+		const name = evt.target.name as {} as keyof FORM
+		const value = evt.target.value as {} as FORM[keyof FORM]
+		this.props.onNewFormState(this.props.formState.set(name, value), name)
 	}
 
 	render() {
