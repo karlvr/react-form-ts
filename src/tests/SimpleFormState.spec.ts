@@ -8,6 +8,10 @@ interface A {
 	c: C
 }
 
+interface AA {
+	bs: B[]
+}
+
 interface B {
 	title: string
 	count: number
@@ -114,6 +118,84 @@ describe('SimpleFormState tests', () => {
 
 		expect(fsa.getValues()).to.deep.equal(a)
 		expect(fsa2.getValues().bs.length).to.equal(1)
+	})
+
+	it('splice one', () => {
+		const fsa = new SimpleFormState(a)
+		const fsa2 = fsa.push('bs', {
+			title: 'First',
+			count: 1,
+		})
+		const fsa3 = fsa2.push('bs', {
+			title: 'Second',
+			count: 2,
+		})
+
+		expect(fsa3.getValues().bs).to.deep.equal([
+			{ title: 'My first title', count: 7 },
+			{ title: 'First', count: 1 },
+			{ title: 'Second', count: 2 }
+		])
+
+		const fsa4 = fsa3.splice('bs', 1, 1)
+		expect(fsa4.getValues().bs).to.deep.equal([
+			{ title: 'My first title', count: 7 },
+			{ title: 'Second', count: 2 }
+		])
+		expect(fsa3.getValues().bs).to.deep.equal([
+			{ title: 'My first title', count: 7 },
+			{ title: 'First', count: 1 },
+			{ title: 'Second', count: 2 }
+		])
+	})
+
+	it('splice remainder', () => {
+		const a: AA = {
+			bs: [
+				{ title: 'One', count: 1 },
+				{ title: 'Two', count: 2 },
+				{ title: 'Three', count: 3 },
+				{ title: 'Four', count: 4 },
+			],
+		}
+		
+		const fsa = new SimpleFormState(a)
+		const fsa2 = fsa.splice('bs', 2)
+		expect(fsa2.getValues().bs).to.deep.equal([
+			{ title: 'One', count: 1 },
+			{ title: 'Two', count: 2 },
+		])
+	})
+
+	it('splice add', () => {
+		const a: AA = {
+			bs: [
+				{ title: 'One', count: 1 },
+				{ title: 'Two', count: 2 },
+				{ title: 'Three', count: 3 },
+				{ title: 'Four', count: 4 },
+			],
+		}
+		
+		const fsa = new SimpleFormState(a)
+		const fsa2 = fsa.splice('bs', 3, 0,
+			{ title: 'Insert 1', count: 5 },
+			{ title: 'Insert 2', count: 6 },
+		)
+		expect(fsa2.getValues().bs).to.deep.equal([
+			{ title: 'One', count: 1 },
+			{ title: 'Two', count: 2 },
+			{ title: 'Three', count: 3 },
+			{ title: 'Insert 1', count: 5 },
+			{ title: 'Insert 2', count: 6 },
+			{ title: 'Four', count: 4 },
+		])
+		expect(fsa.getValues().bs).to.deep.equal([
+			{ title: 'One', count: 1 },
+			{ title: 'Two', count: 2 },
+			{ title: 'Three', count: 3 },
+			{ title: 'Four', count: 4 },
+		])
 	})
 
 })

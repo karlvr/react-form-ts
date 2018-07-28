@@ -67,6 +67,22 @@ export class PatchFormState<SOURCE, PATCH> implements FormState<Combined<SOURCE,
 		return this.set(name, array as any as Combined<SOURCE, PATCH>[P])
 	}
 
+	splice<P extends ArrayKeys<Combined<SOURCE, PATCH>>>(name: P, start: number, deleteCount?: number, ...values: Array<ArrayProperties<Combined<SOURCE, PATCH>>[P]>): PatchFormState<SOURCE, PATCH> {
+		let array = this.patch[name] as any as Array<ArrayProperties<Combined<SOURCE, PATCH>>[P]>
+		if (array) {
+			array = [...array]
+		} else {
+			return this
+		}
+
+		if (deleteCount !== undefined) {
+			array.splice(start, deleteCount, ...values)
+		} else {
+			array.splice(start)
+		}
+		return this.set(name, array as any as Combined<SOURCE, PATCH>[P])
+	}
+
 	apply(func: (form: Combined<SOURCE, PATCH>) => Combined<SOURCE, PATCH>): PatchFormState<SOURCE, PATCH> {
 		let form = this.getValues()
 		form = func(form)

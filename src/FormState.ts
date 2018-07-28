@@ -8,6 +8,7 @@ export interface FormState<FORM> {
 	get<P extends keyof (FORM)>(name: P, defaultValue?: FORM[P]): FORM[P]
 	set<P extends keyof FORM>(name: P, value: FORM[P]): FormState<FORM>
 	push<P extends ArrayKeys<FORM>>(name: P, value: ArrayProperties<FORM>[P]): FormState<FORM>
+	splice<P extends ArrayKeys<FORM>>(name: P, start: number, deleteCount?: number, ...values: Array<ArrayProperties<FORM>[P]>): FormState<FORM>
 	apply(func: (form: FORM) => FORM): FormState<FORM>
 	getValues(): FORM
 	isEmpty(): boolean

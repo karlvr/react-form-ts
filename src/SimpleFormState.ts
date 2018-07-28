@@ -56,6 +56,22 @@ export class SimpleFormState<FORM> implements FormState<FORM> {
 		return this.set(name, array as any as FORM[P])
 	}
 
+	splice<P extends ArrayKeys<FORM>>(name: P, start: number, deleteCount?: number, ...values: Array<ArrayProperties<FORM>[P]>): SimpleFormState<FORM> {
+		let array = this.form[name] as any as Array<ArrayProperties<FORM>[P]>
+		if (array) {
+			array = [...array]
+		} else {
+			return this
+		}
+
+		if (deleteCount !== undefined) {
+			array.splice(start, deleteCount, ...values)
+		} else {
+			array.splice(start)
+		}
+		return this.set(name, array as any as FORM[P])
+	}
+
 	apply(func: (form: FORM) => FORM): SimpleFormState<FORM> {
 		let form = this.getValues()
 		form = func(form)
