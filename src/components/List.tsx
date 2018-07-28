@@ -37,6 +37,10 @@ export default class List<FORM, P extends ArrayKeys<FORM>> extends React.Compone
 		const startIndex = this.props.start !== undefined ? this.props.start : 0
 		const endIndex = this.props.howMany !== undefined ? startIndex + this.props.howMany : array.length
 
+		if (startIndex >= endIndex) {
+			return this.props.renderEmpty ? this.props.renderEmpty() : null
+		}
+
 		return (
 			<React.Fragment>
 				{this.props.renderBefore && this.props.renderBefore()}
