@@ -1,10 +1,8 @@
+import { ArrayProperties } from "./types";
+
 /**
  * An interface that is used by the form controls to refer to form state implementations.
  */
-type ArrayProperties<T> = {
-	[P in keyof T]: T[P] extends (infer R)[] ? R
-	: never
-}
 
 export interface FormState<FORM extends Object> {
 	get<PROPERTY extends keyof (FORM)>(name: PROPERTY, defaultValue?: FORM[PROPERTY]): FORM[PROPERTY]

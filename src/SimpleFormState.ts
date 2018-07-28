@@ -1,3 +1,6 @@
+import { FormState } from "./FormState";
+import { ArrayProperties } from "./types";
+
 /**
  * A class to assist with a form that creates an object.
  * 
@@ -5,13 +8,7 @@
  * 
  * This object is immutable, so it is suitable to be put into a React component state.
  */
-
-type ArrayProperties<T> = {
-	[P in keyof T]: T[P] extends (infer R)[] ? R
-	: never
-}
-
-export class SimpleFormState<FORM extends Object> {
+export class SimpleFormState<FORM extends Object> implements FormState<FORM> {
 
 	private form: FORM
 
