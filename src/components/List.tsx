@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { SimpleFormState } from '../SimpleFormState'
+import { FormState } from '../FormState'
 import { ArrayKeys, ArrayProperties } from '../types';
 
 interface OwnProps<FORM, P extends ArrayKeys<FORM>> {
-	formState: SimpleFormState<FORM>
+	formState: FormState<FORM>
 	name: P
-	onNewFormState: (newState: SimpleFormState<FORM>) => void
-	render: (index: number, formState: SimpleFormState<ArrayProperties<FORM>[P]>, onNewFormState: (newState: SimpleFormState<ArrayProperties<FORM>[P]>) => void) => React.ReactNode
+	onNewFormState: (newState: FormState<FORM>) => void
+	render: (index: number, formState: FormState<ArrayProperties<FORM>[P]>, onNewFormState: (newState: FormState<ArrayProperties<FORM>[P]>) => void) => React.ReactNode
 	renderBefore?: () => React.ReactNode
 	renderAfter?: () => React.ReactNode
 	renderEmpty?: () => React.ReactNode
@@ -14,7 +14,7 @@ interface OwnProps<FORM, P extends ArrayKeys<FORM>> {
 
 export default class List<FORM, P extends ArrayKeys<FORM>> extends React.Component<OwnProps<FORM, P>> {
 
-	onNewFormState = (index: number, newState: SimpleFormState<ArrayProperties<FORM>[P]>) => {
+	onNewFormState = (index: number, newState: FormState<ArrayProperties<FORM>[P]>) => {
 		this.props.onNewFormState(this.props.formState.mergeIndexProperty(this.props.name, index, newState.getValues()))
 	}
 
@@ -29,7 +29,7 @@ export default class List<FORM, P extends ArrayKeys<FORM>> extends React.Compone
 				{this.props.renderBefore && this.props.renderBefore()}
 				{array.map((el, index) => {
 					const formState = this.props.formState.subIndexProperty(this.props.name, index)
-					return this.props.render(index, formState as any as SimpleFormState<ArrayProperties<FORM>[P]>, this.onNewFormState.bind(this, index))
+					return this.props.render(index, formState as any as FormState<ArrayProperties<FORM>[P]>, this.onNewFormState.bind(this, index))
 				})}
 				{this.props.renderAfter && this.props.renderAfter()}
 			</React.Fragment>

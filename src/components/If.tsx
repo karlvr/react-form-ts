@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { SimpleFormState } from '../SimpleFormState'
+import { FormState } from '../FormState'
 
 interface OwnProps<FORM, P extends keyof FORM> {
-	formState: SimpleFormState<FORM>
+	formState: FormState<FORM>
 	name: P
 }
 
