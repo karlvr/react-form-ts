@@ -5,11 +5,20 @@ import { ArrayKeys, ArrayProperties } from '../types';
 interface OwnProps<FORM, P extends ArrayKeys<FORM>> {
 	formState: FormState<FORM>
 	name: P
+	start?: number
+	howMany?: number
 	onNewFormState: (newState: FormState<FORM>) => void
-	render: (index: number, formState: FormState<ArrayProperties<FORM>[P]>, onNewFormState: (newState: FormState<ArrayProperties<FORM>[P]>) => void) => React.ReactNode
+	render: (info: ListIterationInfo, formState: FormState<ArrayProperties<FORM>[P]>, onNewFormState: (newState: FormState<ArrayProperties<FORM>[P]>) => void) => React.ReactNode
 	renderBefore?: () => React.ReactNode
 	renderAfter?: () => React.ReactNode
 	renderEmpty?: () => React.ReactNode
+}
+
+export interface ListIterationInfo {
+	index: number
+	count: number
+	first: boolean
+	last: boolean
 }
 
 export default class List<FORM, P extends ArrayKeys<FORM>> extends React.Component<OwnProps<FORM, P>> {
@@ -24,12 +33,27 @@ export default class List<FORM, P extends ArrayKeys<FORM>> extends React.Compone
 			return this.props.renderEmpty ? this.props.renderEmpty() : null
 		}
 
+		let count = 0
+		const startIndex = this.props.start !== undefined ? this.props.start : 0
+		const endIndex = this.props.howMany !== undefined ? startIndex + this.props.howMany : array.length
+
 		return (
 			<React.Fragment>
 				{this.props.renderBefore && this.props.renderBefore()}
 				{array.map((el, index) => {
+					if (index < startIndex || index >= endIndex) {
+						return
+					}
+
 					const formState = this.props.formState.subIndexProperty(this.props.name, index)
-					return this.props.render(index, formState as any as FormState<ArrayProperties<FORM>[P]>, this.onNewFormState.bind(this, index))
+					const info: ListIterationInfo = {
+						index,
+						count,
+						first: count === 0,
+						last: index === endIndex - 1,
+					}
+					count += 1
+					return this.props.render(info, formState as any as FormState<ArrayProperties<FORM>[P]>, this.onNewFormState.bind(this, index))
 				})}
 				{this.props.renderAfter && this.props.renderAfter()}
 			</React.Fragment>
