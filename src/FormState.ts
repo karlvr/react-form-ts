@@ -10,9 +10,9 @@ export interface FormState<FORM extends Object> {
 	apply(func: (form: FORM) => FORM): FormState<FORM>
 	getValues(): FORM
 	isEmpty(): boolean
-	sub<SUBFORM>(func: (form: FORM) => SUBFORM): FormState<SUBFORM>
-	subProperty<P extends keyof FORM>(name: P): FormState<FORM[P]>
-	subIndexProperty<P extends keyof ArrayProperties<FORM>>(name: P, index: number): FormState<ArrayProperties<FORM>[P]>
-	mergeProperty<P extends keyof FORM>(name: P, values: FORM[P]): FormState<FORM>
-	mergeIndexProperty<P extends keyof ArrayProperties<FORM>>(name: P, index: number, values: ArrayProperties<FORM>[P]): FormState<FORM>
+	// sub<SUBFORM>(func: (form: FORM) => SUBFORM): FormState<SUBFORM>
+	// subProperty<P extends keyof FORM>(name: P): FormState<FORM[P]>
+	// subIndexProperty<P extends keyof ArrayProperties<FORM>>(name: P, index: number): FormState<ArrayProperties<FORM>[P]>
+	// mergeProperty<P extends keyof FORM>(name: P, values: FORM[P]): FormState<FORM>
+	// mergeIndexProperty<P extends keyof ArrayProperties<FORM>>(name: P, index: number, values: ArrayProperties<FORM>[P]): FormState<FORM>
 }

@@ -1,11 +1,4 @@
 "use strict";
-/**
- * A class to assist with a form that creates an object.
- *
- * FORM is the type of the object to be populated.
- *
- * This object is immutable, so it is suitable to be put into a React component state.
- */
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -15,6 +8,13 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * A class to assist with a form that creates an object.
+ *
+ * FORM is the type of the object to be populated.
+ *
+ * This object is immutable, so it is suitable to be put into a React component state.
+ */
 var SimpleFormState = /** @class */ (function () {
     function SimpleFormState(source) {
         this.form = source;

@@ -1,3 +1,5 @@
+import { FormState } from './FormState';
+import { ArrayProperties, Combined } from './types';
 /**
  * A class to assist with a form that creates a patch request for an object.
  *
@@ -6,13 +8,7 @@
  *
  * This object is immutable, so it is suitable to be put into a React component state.
  */
-declare type Combined<SOURCE, PATCH> = {
-    [P in keyof SOURCE & keyof PATCH]: SOURCE[P] & PATCH[P];
-};
-declare type ArrayProperties<T> = {
-    [P in keyof T]: T[P] extends (infer R)[] ? R : never;
-};
-export declare class PatchFormState<SOURCE, PATCH> {
+export declare class PatchFormState<SOURCE, PATCH> implements FormState<Combined<SOURCE, PATCH>> {
     private source;
     private patch;
     constructor(source: SOURCE, patch: PATCH);
@@ -48,4 +44,3 @@ export declare class PatchFormState<SOURCE, PATCH> {
     mergeProperty<P extends keyof Combined<SOURCE, PATCH>>(name: P, values: Combined<SOURCE, PATCH>[P]): PatchFormState<SOURCE, PATCH>;
     mergeIndexProperty<P extends keyof ArrayProperties<Combined<SOURCE, PATCH>>>(name: P, index: number, values: ArrayProperties<Combined<SOURCE, PATCH>>[P]): PatchFormState<SOURCE, PATCH>;
 }
-export {};

@@ -8,6 +8,14 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * A class to assist with a form that creates a patch request for an object.
+ *
+ * SOURCE is the type of the original object. PATCH is the type of the patch request, which
+ * should have every property as optional.
+ *
+ * This object is immutable, so it is suitable to be put into a React component state.
+ */
 var PatchFormState = /** @class */ (function () {
     function PatchFormState(source, patch) {
         this.source = source;

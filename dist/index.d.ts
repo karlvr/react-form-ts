@@ -1,3 +1,4 @@
+export { FormState } from './FormState';
 export { SimpleFormState } from './SimpleFormState';
 export { PatchFormState } from './PatchFormState';
 export { default as Input } from './components/Input';
