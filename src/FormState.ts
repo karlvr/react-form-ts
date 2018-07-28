@@ -1,12 +1,13 @@
-import { ArrayProperties } from "./types";
+import { ArrayProperties, ArrayKeys } from "./types";
 
 /**
  * An interface that is used by the form controls to refer to form state implementations.
  */
 
 export interface FormState<FORM extends Object> {
-	get<PROPERTY extends keyof (FORM)>(name: PROPERTY, defaultValue?: FORM[PROPERTY]): FORM[PROPERTY]
-	set<PROPERTY extends keyof FORM>(name: PROPERTY, value: FORM[PROPERTY]): FormState<FORM>
+	get<P extends keyof (FORM)>(name: P, defaultValue?: FORM[P]): FORM[P]
+	set<P extends keyof FORM>(name: P, value: FORM[P]): FormState<FORM>
+	push<P extends ArrayKeys<FORM>>(name: P, value: ArrayProperties<FORM>[P]): FormState<FORM>
 	apply(func: (form: FORM) => FORM): FormState<FORM>
 	getValues(): FORM
 	isEmpty(): boolean

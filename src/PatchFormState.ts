@@ -1,5 +1,5 @@
 import { FormState } from './FormState'
-import { ArrayProperties, Combined } from './types';
+import { ArrayProperties, Combined, ArrayKeys } from './types';
 
 /**
  * A class to assist with a form that creates a patch request for an object.
@@ -53,6 +53,18 @@ export class PatchFormState<SOURCE, PATCH> implements FormState<Combined<SOURCE,
 		}
 		const patch = { ...(this.patch as {}), [name]: value } as PATCH
 		return new PatchFormState<SOURCE, PATCH>(this.source, patch)
+	}
+
+	push<P extends ArrayKeys<Combined<SOURCE, PATCH>>>(name: P, value: ArrayProperties<Combined<SOURCE, PATCH>>[P]): PatchFormState<SOURCE, PATCH> {
+		let array = this.patch[name] as any as Array<ArrayProperties<Combined<SOURCE, PATCH>>[P]>
+		if (array) {
+			array = [...array]
+		} else {
+			array = []
+		}
+
+		array.push(value)
+		return this.set(name, array as any as Combined<SOURCE, PATCH>[P])
 	}
 
 	apply(func: (form: Combined<SOURCE, PATCH>) => Combined<SOURCE, PATCH>): PatchFormState<SOURCE, PATCH> {
@@ -110,7 +122,7 @@ export class PatchFormState<SOURCE, PATCH> implements FormState<Combined<SOURCE,
 		return new PatchFormState(this.source[name], form[name] || {})
 	}
 
-	subIndexProperty<P extends keyof ArrayProperties<Combined<SOURCE, PATCH>>>(name: P, index: number): PatchFormState<ArrayProperties<SOURCE>[P], ArrayProperties<Required<PATCH>>[P]> {
+	subIndexProperty<P extends ArrayKeys<Combined<SOURCE, PATCH>>>(name: P, index: number): PatchFormState<ArrayProperties<SOURCE>[P], ArrayProperties<Required<PATCH>>[P]> {
 		const form = this.getValues()
 		const formArray = form[name] as any as Array<ArrayProperties<Combined<SOURCE, PATCH>>[P]>
 		const sourceArray = this.source[name] as any as Array<ArrayProperties<SOURCE>[P]>
@@ -122,7 +134,7 @@ export class PatchFormState<SOURCE, PATCH> implements FormState<Combined<SOURCE,
 		return this.merge(merge)
 	}
 
-	mergeIndexProperty<P extends keyof ArrayProperties<Combined<SOURCE, PATCH>>>(name: P, index: number, values: ArrayProperties<Combined<SOURCE, PATCH>>[P]): PatchFormState<SOURCE, PATCH> {
+	mergeIndexProperty<P extends ArrayKeys<Combined<SOURCE, PATCH>>>(name: P, index: number, values: ArrayProperties<Combined<SOURCE, PATCH>>[P]): PatchFormState<SOURCE, PATCH> {
 		const array = this.patch[name] !== undefined ? [...this.patch[name] as any as Array<ArrayProperties<Combined<SOURCE, PATCH>>[P]>] : []
 		const merge = { [name]: array } as {} as Combined<SOURCE, PATCH>
 		array[index] = values

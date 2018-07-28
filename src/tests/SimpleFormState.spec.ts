@@ -87,4 +87,33 @@ describe('SimpleFormState tests', () => {
 		expect(fsa4.getValues().bs[0].title).to.equal('Changed')
 	})
 
+	it('SimpleFormState push', () => {
+		const fsa = new SimpleFormState(a)
+		const fsa2 = fsa.push('bs', {
+			title: 'Pushed',
+			count: 8,
+		})
+
+		expect(fsa.getValues()).to.deep.equal(a)
+		expect(fsa2.getValues().bs.length).to.equal(2)
+	})
+
+	it('SimpleFormState push from empty', () => {
+		const a: A = {
+			name: 'My name',
+			bs: [],
+			c: {
+				contents: 'Deep',
+			}
+		}
+		const fsa = new SimpleFormState(a)
+		const fsa2 = fsa.push('bs', {
+			title: 'Pushed',
+			count: 8,
+		})
+
+		expect(fsa.getValues()).to.deep.equal(a)
+		expect(fsa2.getValues().bs.length).to.equal(1)
+	})
+
 })

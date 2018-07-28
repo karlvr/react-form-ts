@@ -1,5 +1,5 @@
 import { FormState } from "./FormState";
-import { ArrayProperties } from "./types";
+import { ArrayProperties, UndefinedIfUndefined, ArrayKeys } from "./types";
 
 /**
  * A class to assist with a form that creates an object.
@@ -8,7 +8,7 @@ import { ArrayProperties } from "./types";
  * 
  * This object is immutable, so it is suitable to be put into a React component state.
  */
-export class SimpleFormState<FORM extends Object> implements FormState<FORM> {
+export class SimpleFormState<FORM> implements FormState<FORM> {
 
 	private form: FORM
 
@@ -42,6 +42,18 @@ export class SimpleFormState<FORM extends Object> implements FormState<FORM> {
 	set<PROPERTY extends keyof FORM>(name: PROPERTY, value: FORM[PROPERTY]): SimpleFormState<FORM> {
 		const form = { ...(this.form as {}), [name]: value } as FORM
 		return new SimpleFormState<FORM>(form)
+	}
+
+	push<P extends ArrayKeys<FORM>>(name: P, value: ArrayProperties<FORM>[P]): SimpleFormState<FORM> {
+		let array = this.form[name] as any as Array<ArrayProperties<FORM>[P]>
+		if (array) {
+			array = [...array]
+		} else {
+			array = []
+		}
+
+		array.push(value)
+		return this.set(name, array as any as FORM[P])
 	}
 
 	apply(func: (form: FORM) => FORM): SimpleFormState<FORM> {
@@ -95,16 +107,28 @@ export class SimpleFormState<FORM extends Object> implements FormState<FORM> {
 		return new SimpleFormState(subform)
 	}
 
-	subProperty<P extends keyof FORM>(name: P): SimpleFormState<FORM[P]> {
+	subProperty<P extends keyof FORM>(name: P): SimpleFormState<Required<FORM>[P]> | UndefinedIfUndefined<FORM[P]> {
 		const form = this.getValues()
-		return new SimpleFormState(form[name])
+		if (form[name] !== undefined) {
+			return new SimpleFormState(form[name]) as SimpleFormState<NonNullable<FORM>[P]>
+		} else {
+			return undefined as any
+		}
 	}
 
-	subIndexProperty<P extends keyof ArrayProperties<FORM>>(name: P, index: number): SimpleFormState<ArrayProperties<FORM>[P]> {
+	subIndexProperty<P extends ArrayKeys<FORM>>(name: P, index: number): SimpleFormState<Required<ArrayProperties<FORM>>[P]> | UndefinedIfUndefined<FORM[P]> {
 		const form = this.getValues()
-		/* tslint:disable-next-line:no-any */
 		const array = form[name] as any as Array<ArrayProperties<FORM>[P]>
-		return new SimpleFormState<ArrayProperties<FORM>[P]>(array[index])
+		if (array !== undefined) {
+			const value = array[index]
+			if (value !== undefined) {
+				return new SimpleFormState<Required<ArrayProperties<FORM>>[P]>(array[index] as any as Required<ArrayProperties<FORM>>[P])
+			} else {
+				return undefined as any
+			}
+		} else {
+			return undefined as any
+		}
 	}
 
 	mergeProperty<P extends keyof FORM>(name: P, values: FORM[P]): SimpleFormState<FORM> {
@@ -112,9 +136,8 @@ export class SimpleFormState<FORM extends Object> implements FormState<FORM> {
 		return this.merge(merge)
 	}
 
-	mergeIndexProperty<P extends keyof ArrayProperties<FORM>>(name: P, index: number, values: ArrayProperties<FORM>[P]): SimpleFormState<FORM> {
-		/* tslint:disable-next-line:no-any */
-		const merge = { [name]: [...this.form[name] as any as Array<ArrayProperties<FORM>[P]>]} as {} as FORM
+	mergeIndexProperty<P extends ArrayKeys<FORM>>(name: P, index: number, values: ArrayProperties<FORM>[P]): SimpleFormState<FORM> {
+		const merge = { [name]: [...(this.form[name] ? this.form[name] : []) as any as Array<ArrayProperties<FORM>[P]>]} as {} as FORM
 		const array = merge[name] as any as Array<ArrayProperties<FORM>[P]>
 		array[index] = values
 		return this.merge(merge)
