@@ -1,7 +1,7 @@
 {
-  "name": "react-form-ts",
+  "name": "formalities",
   "version": "0.0.4",
-  "description": "A library for react forms in TypeScript",
+  "description": "React forms with type safety in TypeScript",
   "author": "Karl von Randow",
   "license": "Apache-2.0",
   "main": "dist/index.js",
