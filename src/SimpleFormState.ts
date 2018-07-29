@@ -82,11 +82,10 @@ export class SimpleFormState<FORM> implements FormState<FORM> {
 	 * Return a new form state with the values from the given patch merged in to this state.
 	 * @param other A patch object
 	 */
-	merge(other: FORM): SimpleFormState<FORM> {
+	merge(other: Partial<FORM>): SimpleFormState<FORM> {
 		let working: SimpleFormState<FORM> = this
 		for (let k in other) {
 			if (other.hasOwnProperty(k)) {
-				/* tslint:disable-next-line:no-any */
 				working = working.set(k as {} as keyof FORM, other[k] as any)
 			}
 		}

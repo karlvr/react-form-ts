@@ -93,7 +93,7 @@ export class PatchFormState<SOURCE, PATCH> implements FormState<Combined<SOURCE,
 	 * Return a new form state with the values from the given patch merged in to this state.
 	 * @param other A patch object
 	 */
-	merge(other: Combined<SOURCE, PATCH>): PatchFormState<SOURCE, PATCH> {
+	merge(other: Partial<Combined<SOURCE, PATCH>>): PatchFormState<SOURCE, PATCH> {
 		let patch = this.getValues()
 		for (let k in other) {
 			if (other.hasOwnProperty(k)) {
