@@ -104,4 +104,12 @@ describe('PatchFormState tests', () => {
 		expect(fsa4.getValues().bs[0].title).to.equal('Changed')
 	})
 
+	it('set patch same as source should leave patch undefined', () => {
+		const fsa = new PatchFormState(a, aa)
+		const fsa2 = fsa.set('name', 'Changed')
+		expect(fsa2.getValues()).to.deep.equal({ name: 'Changed' })
+		const fsa3 = fsa2.set('name', a.name)
+		expect(fsa3.getValues()).to.deep.equal({})
+	})
+
 })
