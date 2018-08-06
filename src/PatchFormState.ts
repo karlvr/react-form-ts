@@ -48,11 +48,7 @@ export class PatchFormState<SOURCE, PATCH> implements FormState<Combined<SOURCE,
 	 * @param value New value
 	 */
 	set<PROPERTY extends keyof Combined<SOURCE, PATCH>>(name: PROPERTY, value: Combined<SOURCE, PATCH>[PROPERTY] | undefined): PatchFormState<SOURCE, PATCH> {
-		if (value === this.source[name]) {
-			value = undefined
-		}
-		const patch = { ...(this.patch as {}), [name]: value } as PATCH
-		return new PatchFormState<SOURCE, PATCH>(this.source, patch)
+		return this.merge({ [name]: value } as {} as Partial<Combined<SOURCE, PATCH>>)
 	}
 
 	push<P extends ArrayKeys<Combined<SOURCE, PATCH>>>(name: P, value: ArrayProperties<Combined<SOURCE, PATCH>>[P]): PatchFormState<SOURCE, PATCH> {
@@ -97,7 +93,12 @@ export class PatchFormState<SOURCE, PATCH> implements FormState<Combined<SOURCE,
 		let patch = this.getValues()
 		for (let k in other) {
 			if (other.hasOwnProperty(k)) {
-				(patch as any)[k] = (other as any)[k]
+				const otherValue = (other as any)[k]
+				if (otherValue === (this.source as any)[k]) {
+					delete (patch as any)[k]
+				} else {
+					(patch as any)[k] = (other as any)[k]
+				}
 			}
 		}
 

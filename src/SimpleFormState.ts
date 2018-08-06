@@ -40,8 +40,7 @@ export class SimpleFormState<FORM> implements FormState<FORM> {
 	 * @param value New value
 	 */
 	set<PROPERTY extends keyof FORM>(name: PROPERTY, value: FORM[PROPERTY]): SimpleFormState<FORM> {
-		const form = { ...(this.form as {}), [name]: value } as FORM
-		return new SimpleFormState<FORM>(form)
+		return this.merge({ [name]: value } as {} as Partial<FORM>)
 	}
 
 	push<P extends ArrayKeys<FORM>>(name: P, value: ArrayProperties<FORM>[P]): SimpleFormState<FORM> {
@@ -83,13 +82,14 @@ export class SimpleFormState<FORM> implements FormState<FORM> {
 	 * @param other A patch object
 	 */
 	merge(other: Partial<FORM>): SimpleFormState<FORM> {
-		let working: SimpleFormState<FORM> = this
+		let values = this.getValues()
 		for (let k in other) {
 			if (other.hasOwnProperty(k)) {
-				working = working.set(k as {} as keyof FORM, other[k] as any)
+				(values as any)[k] = (other as any)[k]
 			}
 		}
-		return working
+
+		return new SimpleFormState(values)
 	}
 
 	/**
