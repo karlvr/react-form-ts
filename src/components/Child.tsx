@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { FormState } from '../FormState'
-import { ArrayKeys, ArrayProperties } from '../types';
+import { ObjectKeys } from '../types';
 
 interface OwnProps<FORM, P extends keyof FORM> {
 	formState: FormState<FORM>
@@ -10,7 +10,7 @@ interface OwnProps<FORM, P extends keyof FORM> {
 	renderEmpty?: () => React.ReactNode
 }
 
-export default class Child<FORM, P extends ArrayKeys<FORM>> extends React.Component<OwnProps<FORM, P>> {
+export default class Child<FORM, P extends ObjectKeys<FORM>> extends React.Component<OwnProps<FORM, P>> {
 
 	onNewFormState = (newState: FormState<FORM[P]>) => {
 		this.props.onNewFormState(this.props.formState.mergeProperty(this.props.name, newState.getValues()))
