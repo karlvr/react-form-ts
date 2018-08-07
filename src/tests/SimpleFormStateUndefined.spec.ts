@@ -62,6 +62,13 @@ describe('SimpleFormState undefined tests', () => {
 		expect(fsa5.getValues()).to.deep.equal({ contents: 'Changed' })
 	})
 
+	it('object subs with default value', () => {
+		const fsa = new SimpleFormState(a)
+		const fsa2 = fsa.subProperty('c', { contents: 'Original' })
+		expect(fsa2).to.not.be.undefined
+		expect(fsa2!.get('contents')).to.equal('Original')
+	})
+
 	it('object sub should merge', () => {
 		const fsa = new SimpleFormState(a)
 		const fsa2 = new SimpleFormState<C>({ contents: 'Original' })

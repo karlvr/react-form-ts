@@ -134,9 +134,15 @@ export class PatchFormState<SOURCE, PATCH> implements FormState<Combined<SOURCE,
 		return new PatchFormState(subsource, subpatch)
 	}
 
-	subProperty<P extends keyof Combined<SOURCE, PATCH>>(name: P): PatchFormState<SOURCE[P], Required<PATCH>[P]> {
+	subProperty<P extends keyof Combined<SOURCE, PATCH>>(name: P, defaultValue?: PATCH[P]): PatchFormState<SOURCE[P], Required<PATCH>[P]> {
 		const form = this.getValues()
-		return new PatchFormState(this.source[name], form[name] || {})
+		if (form[name] !== undefined) {
+			return new PatchFormState(this.source[name], form[name])
+		} else if (defaultValue !== undefined) {
+			return new PatchFormState(this.source[name], defaultValue)
+		} else {
+			return new PatchFormState(this.source[name], {} as PATCH[P])
+		}
 	}
 
 	subIndexProperty<P extends ArrayKeys<Combined<SOURCE, PATCH>>>(name: P, index: number): PatchFormState<ArrayProperties<SOURCE>[P], ArrayProperties<Required<PATCH>>[P]> {

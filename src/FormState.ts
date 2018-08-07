@@ -14,7 +14,7 @@ export interface FormState<FORM> {
 	getValues(): FORM
 	isEmpty(): boolean
 	sub<SUBFORM>(func: (form: FORM) => SUBFORM): any
-	subProperty<P extends keyof FORM>(name: P): any
+	subProperty<P extends keyof FORM>(name: P, defaultValue?: FORM[P]): any
 	subIndexProperty<P extends ArrayKeys<FORM>>(name: P, index: number): any
 	mergeProperty<P extends keyof FORM>(name: P, values: FORM[P]): FormState<FORM>
 	mergeIndexProperty<P extends ArrayKeys<FORM>>(name: P, index: number, values: ArrayProperties<FORM>[P]): FormState<FORM>

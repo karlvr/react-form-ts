@@ -122,10 +122,12 @@ export class SimpleFormState<FORM> implements FormState<FORM> {
 		return new SimpleFormState(subform)
 	}
 
-	subProperty<P extends keyof FORM>(name: P): SimpleFormState<Required<FORM>[P]> | UndefinedIfUndefined<FORM[P]> {
+	subProperty<P extends keyof FORM>(name: P, defaultValue?: FORM[P]): SimpleFormState<Required<FORM>[P]> | UndefinedIfUndefined<FORM[P]> {
 		const form = this.getValues()
 		if (form[name] !== undefined) {
 			return new SimpleFormState(form[name]) as SimpleFormState<NonNullable<FORM>[P]>
+		} else if (defaultValue !== undefined) {
+			return new SimpleFormState(defaultValue) as SimpleFormState<NonNullable<FORM>[P]>
 		} else {
 			return undefined as any
 		}
