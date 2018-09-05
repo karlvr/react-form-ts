@@ -4,19 +4,19 @@ import { FormState } from '../FormState'
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>
 type ElementAttributes = React.InputHTMLAttributes<HTMLSelectElement>
 
-interface OwnProps<FORM> extends Omit<ElementAttributes, 'name' | 'value' | 'onChange'> {
-	name: keyof FORM & string
+interface OwnProps<FORM, K extends keyof FORM> extends Omit<ElementAttributes, 'name' | 'value' | 'onChange'> {
+	name: K & string
 	formState: FormState<FORM>
-	onNewFormState: (newState: FormState<FORM>, name: keyof FORM) => void
-	onValue?: (name: keyof FORM, value: ElementValueType) => FormState<FORM> | undefined
+	onNewFormState: (newState: FormState<FORM>, name: K) => void
+	onValue?: (name: K, value: ElementValueType) => FormState<FORM> | undefined
 }
 
 type ElementValueType = ElementAttributes['value']
 
-export default class Select<FORM> extends React.Component<OwnProps<FORM>> {
+export default class Select<FORM, K extends keyof FORM> extends React.Component<OwnProps<FORM, K>> {
 
 	onChange = (evt: React.ChangeEvent<HTMLSelectElement>) => {
-		const name = evt.target.name as {} as keyof FORM
+		const name = evt.target.name as {} as K
 		const elementValue = evt.target.options[evt.target.selectedIndex].value
 		
 		if (this.props.onValue) {
