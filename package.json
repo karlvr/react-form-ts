@@ -1,6 +1,6 @@
 {
   "name": "formalities",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "React forms with type safety in TypeScript",
   "author": "Karl von Randow",
   "license": "Apache-2.0",
