@@ -19,3 +19,5 @@ export interface FormState<FORM> {
 	mergeProperty<P extends keyof FORM>(name: P, values: FORM[P]): FormState<FORM>
 	mergeIndexProperty<P extends ArrayKeys<FORM>>(name: P, index: number, values: ArrayProperties<FORM>[P]): FormState<FORM>
 }
+
+export type OnNewFormState<FORM> = (newFormState: FormState<FORM>) => void

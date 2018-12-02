@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { FormState } from '../FormState'
+import { FormState, OnNewFormState } from '../FormState'
 import { ObjectKeys } from '../types';
 
 interface OwnProps<FORM, P extends keyof FORM> {
@@ -7,7 +7,7 @@ interface OwnProps<FORM, P extends keyof FORM> {
 	name: P
 	defaultValue?: FORM[P]
 	onNewFormState: (newState: FormState<FORM>) => void
-	render: (formState: FormState<FORM[P]>, onNewFormState: (newState: FormState<FORM[P]>) => void) => React.ReactNode
+	render: (formState: FormState<FORM[P]>, onNewFormState: OnNewFormState<FORM[P]>) => React.ReactNode
 	renderEmpty?: () => React.ReactNode
 }
 
