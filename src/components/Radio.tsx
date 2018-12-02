@@ -4,8 +4,9 @@ import { FormState } from '../FormState'
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>
 type ElementAttributes = React.InputHTMLAttributes<HTMLInputElement>
 
-interface OwnProps<FORM, K extends keyof FORM> extends Omit<ElementAttributes, 'name' | 'type' | 'onChange'> {
+interface OwnProps<FORM, K extends keyof FORM> extends Omit<ElementAttributes, 'name' | 'value' | 'type' | 'onChange'> {
 	name: K & string
+	value: FORM[K]
 	formState: FormState<FORM>
 	onNewFormState: (newState: FormState<FORM>, name: K) => void
 	onChange?: (name: K, value: boolean) => FormState<FORM> | undefined
@@ -23,16 +24,16 @@ export default class Radio<FORM, K extends keyof FORM> extends React.Component<O
 				this.props.onNewFormState(newFormState, name)
 			}
 		} else {
-			this.props.onNewFormState(this.props.formState.set(name, elementValue as any), name)
+			this.props.onNewFormState(this.props.formState.set(name, this.props.value), name)
 		}
 	}
 
 	render() {
 		const { name, formState, onNewFormState, onChange, value, ...rest } = this.props
-		const checked = !!formState.get(name)
+		const checked = formState.get(name) === value
 
 		return (
-			<input name={name} type="radio" onChange={this.onChange} value={value} checked={checked} {...rest} />
+			<input name={name} type="radio" onChange={this.onChange} value={value as any} checked={checked} {...rest} />
 		)
 	}
 }
