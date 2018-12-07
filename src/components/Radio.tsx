@@ -6,6 +6,7 @@ type ElementAttributes = React.InputHTMLAttributes<HTMLInputElement>
 
 interface OwnProps<FORM, K extends keyof FORM> extends Omit<ElementAttributes, 'name' | 'value' | 'type' | 'onChange'> {
 	name: K & string
+	group: string
 	value: FORM[K]
 	formState: FormState<FORM>
 	onNewFormState: (newState: FormState<FORM>, name: K) => void
@@ -29,11 +30,11 @@ export default class Radio<FORM, K extends keyof FORM> extends React.Component<O
 	}
 
 	render() {
-		const { name, formState, onNewFormState, onChange, value, ...rest } = this.props
+		const { name, group, formState, onNewFormState, onChange, value, ...rest } = this.props
 		const checked = formState.get(name) === value
 
 		return (
-			<input name={name} type="radio" onChange={this.onChange} value={value as any} checked={checked} {...rest} />
+			<input name={group} type="radio" onChange={this.onChange} value={value as any} checked={checked} {...rest} />
 		)
 	}
 }
