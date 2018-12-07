@@ -16,7 +16,7 @@ interface OwnProps<FORM, K extends keyof FORM> extends Omit<ElementAttributes, '
 export default class Radio<FORM, K extends keyof FORM> extends React.Component<OwnProps<FORM, K>> {
 
 	onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-		const name = evt.target.name as {} as K
+		const { name } = this.props
 		const elementValue = evt.target.checked
 
 		if (this.props.onChange) {
