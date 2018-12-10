@@ -85,7 +85,12 @@ export class SimpleFormState<FORM> implements FormState<FORM> {
 		let values = this.getValues()
 		for (let k in other) {
 			if (other.hasOwnProperty(k)) {
-				(values as any)[k] = (other as any)[k]
+				const value = (other as any)[k]
+				if (value !== undefined) {
+					(values as any)[k] = value
+				} else {
+					delete (values as any)[k]
+				}
 			}
 		}
 
