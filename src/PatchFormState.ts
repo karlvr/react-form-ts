@@ -94,7 +94,7 @@ export class PatchFormState<SOURCE, PATCH> implements FormState<Combined<SOURCE,
 		for (let k in other) {
 			if (other.hasOwnProperty(k)) {
 				const otherValue = (other as any)[k]
-				if (otherValue === (this.source as any)[k]) {
+				if (otherValue === (this.source as any)[k] || otherValue === undefined) {
 					delete (patch as any)[k]
 				} else {
 					(patch as any)[k] = (other as any)[k]
