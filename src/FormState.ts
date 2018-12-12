@@ -12,7 +12,9 @@ export interface FormState<FORM> {
 	apply(func: (form: FORM) => FORM): FormState<FORM>
 	merge(other: Partial<FORM>): FormState<FORM>
 	getValues(): FORM
+	getValuesCopy(): FORM
 	isEmpty(): boolean
+	isSame(other: FormState<FORM>): boolean
 	sub<SUBFORM>(func: (form: FORM) => SUBFORM): any
 	subProperty<P extends keyof FORM>(name: P, defaultValue?: FORM[P]): any
 	subIndexProperty<P extends ArrayKeys<FORM>>(name: P, index: number): any

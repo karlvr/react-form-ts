@@ -80,7 +80,7 @@ export class PatchFormState<SOURCE, PATCH> implements FormState<Combined<SOURCE,
 	}
 
 	apply(func: (form: Combined<SOURCE, PATCH>) => Combined<SOURCE, PATCH>): PatchFormState<SOURCE, PATCH> {
-		let form = this.getValues()
+		let form = this.getValuesCopy()
 		form = func(form)
 		return new PatchFormState<SOURCE, PATCH>(this.source, form as {} as PATCH)
 	}
@@ -90,7 +90,7 @@ export class PatchFormState<SOURCE, PATCH> implements FormState<Combined<SOURCE,
 	 * @param other A patch object
 	 */
 	merge(other: Partial<Combined<SOURCE, PATCH>>): PatchFormState<SOURCE, PATCH> {
-		let patch = this.getValues()
+		let patch = this.getValuesCopy()
 		for (let k in other) {
 			if (other.hasOwnProperty(k)) {
 				const otherValue = (other as any)[k]
@@ -109,7 +109,15 @@ export class PatchFormState<SOURCE, PATCH> implements FormState<Combined<SOURCE,
 	 * Returns a copy of the current patch state.
 	 */
 	getValues(): Combined<SOURCE, PATCH> {
+		return this.patch as any
+	}
+
+	getValuesCopy(): Combined<SOURCE, PATCH> {
 		return { ...(this.patch as {}) } as Combined<SOURCE, PATCH>
+	}
+
+	isSame(other: FormState<Combined<SOURCE, PATCH>>): boolean {
+		return this.getValues() === other.getValues()
 	}
 
 	/**

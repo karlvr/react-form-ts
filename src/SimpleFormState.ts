@@ -72,7 +72,7 @@ export class SimpleFormState<FORM> implements FormState<FORM> {
 	}
 
 	apply(func: (form: FORM) => FORM): SimpleFormState<FORM> {
-		let form = this.getValues()
+		let form = this.getValuesCopy()
 		form = func(form)
 		return new SimpleFormState<FORM>(form)
 	}
@@ -82,7 +82,7 @@ export class SimpleFormState<FORM> implements FormState<FORM> {
 	 * @param other A patch object
 	 */
 	merge(other: Partial<FORM>): SimpleFormState<FORM> {
-		let values = this.getValues()
+		let values = this.getValuesCopy()
 		for (let k in other) {
 			if (other.hasOwnProperty(k)) {
 				const value = (other as any)[k]
@@ -101,7 +101,15 @@ export class SimpleFormState<FORM> implements FormState<FORM> {
 	 * Returns a copy of the current patch state.
 	 */
 	getValues(): FORM {
-		return { ...(this.form as {}) } as FORM
+		return this.form
+	}
+
+	getValuesCopy(): FORM {
+		return {...(this.form as any)}
+	}
+
+	isSame(other: FormState<FORM>): boolean {
+		return this.getValues() === other.getValues()
 	}
 
 	/**
