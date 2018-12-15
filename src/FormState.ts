@@ -23,3 +23,7 @@ export interface FormState<FORM> {
 }
 
 export type OnNewFormState<FORM> = (newFormState: FormState<FORM>) => void
+
+export type OnFormStateChange<FORM> = (change: FormStateChange<FORM>) => void
+
+export type FormStateChange<T> = Partial<T>
