@@ -1,4 +1,4 @@
-import { ArrayProperties, ArrayKeys } from "./types";
+import { ArrayProperties, ArrayKeys, ObjectKeys } from "./types";
 
 /**
  * An interface that is used by the form controls to refer to form state implementations.
@@ -15,10 +15,10 @@ export interface FormState<FORM> {
 	getValuesCopy(): FORM
 	isEmpty(): boolean
 	isSame(other: FormState<FORM>): boolean
-	sub<SUBFORM>(func: (form: FORM) => SUBFORM): any
-	subProperty<P extends keyof FORM>(name: P, defaultValue?: FORM[P]): any
+	sub<SUBFORM extends object>(func: (form: FORM) => SUBFORM): any
+	subProperty<P extends ObjectKeys<FORM>>(name: P, defaultValue?: FORM[P]): any
 	subIndexProperty<P extends ArrayKeys<FORM>>(name: P, index: number): any
-	mergeProperty<P extends keyof FORM>(name: P, values: FORM[P]): FormState<FORM>
+	mergeProperty<P extends ObjectKeys<FORM>>(name: P, values: Partial<FORM[P]>): FormState<FORM>
 	mergeIndexProperty<P extends ArrayKeys<FORM>>(name: P, index: number, values: ArrayProperties<FORM>[P]): FormState<FORM>
 }
 

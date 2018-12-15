@@ -23,3 +23,7 @@ export type Combined<SOURCE, PATCH> = {
 
 /** Type is undefined if the given type can be undefined, otherwise never. */
 export type UndefinedIfUndefined<T> = T extends undefined | null ? undefined : never
+
+export type DeepPartial<T> = {
+	[K in keyof T]?: T extends object ? DeepPartial<T[K]> : T[K]
+}

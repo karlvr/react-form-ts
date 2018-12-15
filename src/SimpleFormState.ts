@@ -1,5 +1,6 @@
 import { FormState } from "./FormState";
-import { ArrayProperties, UndefinedIfUndefined, ArrayKeys } from "./types";
+import { ArrayProperties, UndefinedIfUndefined, ArrayKeys, DeepPartial, ObjectKeys, ObjectProps } from "./types";
+import { mergeObjects, deepMergeObjects } from "./functions";
 
 /**
  * A class to assist with a form that creates an object.
@@ -82,19 +83,11 @@ export class SimpleFormState<FORM> implements FormState<FORM> {
 	 * @param other A patch object
 	 */
 	merge(other: Partial<FORM>): SimpleFormState<FORM> {
-		let values = this.getValuesCopy()
-		for (let k in other) {
-			if (other.hasOwnProperty(k)) {
-				const value = (other as any)[k]
-				if (value !== undefined) {
-					(values as any)[k] = value
-				} else {
-					delete (values as any)[k]
-				}
-			}
-		}
+		return new SimpleFormState(mergeObjects(this.getValues() as {} as object, other) as {} as FORM)
+	}
 
-		return new SimpleFormState(values)
+	deepMerge(other: DeepPartial<FORM>): SimpleFormState<FORM> {
+		return new SimpleFormState(deepMergeObjects(this.getValues() as {} as object, other) as {} as FORM)
 	}
 
 	/**
@@ -129,18 +122,18 @@ export class SimpleFormState<FORM> implements FormState<FORM> {
 		return true
 	}
 
-	sub<SUBFORM>(func: (form: FORM) => SUBFORM): SimpleFormState<SUBFORM> {
+	sub<SUBFORM extends object>(func: (form: FORM) => SUBFORM): SimpleFormState<SUBFORM> {
 		const form = this.getValues()
 		const subform = func(form)
 		return new SimpleFormState(subform)
 	}
 
-	subProperty<P extends keyof FORM>(name: P, defaultValue?: FORM[P]): SimpleFormState<Required<FORM>[P]> | UndefinedIfUndefined<FORM[P]> {
+	subProperty<P extends ObjectKeys<FORM>>(name: P, defaultValue?: FORM[P]): SimpleFormState<Required<FORM>[P]> | UndefinedIfUndefined<FORM[P]> {
 		const form = this.getValues()
 		if (form[name] !== undefined) {
-			return new SimpleFormState(form[name]) as SimpleFormState<NonNullable<FORM>[P]>
+			return new SimpleFormState(form[name] as any) as SimpleFormState<NonNullable<ObjectProps<FORM>>[P]>
 		} else if (defaultValue !== undefined) {
-			return new SimpleFormState(defaultValue) as SimpleFormState<NonNullable<FORM>[P]>
+			return new SimpleFormState(defaultValue as any) as SimpleFormState<NonNullable<ObjectProps<FORM>>[P]>
 		} else {
 			return undefined as any
 		}
