@@ -18,7 +18,15 @@ type ElementValueType = ElementAttributes['value']
  */
 export default class Password<FORM, K extends keyof FORM> extends React.Component<OwnProps<FORM, K>> {
 
-	onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+	render() {
+		const { name, formState, onNewFormState, onValue, ...rest } = this.props
+
+		return (
+			<input type="password" name={name} onChange={this.onChange} value={undefined} {...rest} />
+		)
+	}
+
+	private onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
 		const name = evt.target.name as {} as K
 		const elementValue = evt.target.value
 
@@ -31,13 +39,5 @@ export default class Password<FORM, K extends keyof FORM> extends React.Componen
 			const value = elementValue as {} as FORM[keyof FORM]
 			this.props.onNewFormState(this.props.formState.set(name, value), name)
 		}
-	}
-
-	render() {
-		const { name, formState, onNewFormState, onValue, ...rest } = this.props
-
-		return (
-			<input type="password" name={name} onChange={this.onChange} value={undefined} {...rest} />
-		)
 	}
 }

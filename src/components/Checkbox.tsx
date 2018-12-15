@@ -13,7 +13,16 @@ interface OwnProps<FORM, K extends keyof FORM> extends Omit<ElementAttributes, '
 
 export default class Checkbox<FORM, K extends keyof FORM> extends React.Component<OwnProps<FORM, K>> {
 
-	onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+	render() {
+		const { name, formState, onNewFormState, onChange, value, ...rest } = this.props
+		const checked = !!formState.get(name)
+
+		return (
+			<input name={name} type="checkbox" onChange={this.onChange} value={value} checked={checked} {...rest} />
+		)
+	}
+
+	private onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
 		const name = evt.target.name as {} as K
 		const elementValue = evt.target.checked
 
@@ -25,14 +34,5 @@ export default class Checkbox<FORM, K extends keyof FORM> extends React.Componen
 		} else {
 			this.props.onNewFormState(this.props.formState.set(name, elementValue as any), name)
 		}
-	}
-
-	render() {
-		const { name, formState, onNewFormState, onChange, value, ...rest } = this.props
-		const checked = !!formState.get(name)
-
-		return (
-			<input name={name} type="checkbox" onChange={this.onChange} value={value} checked={checked} {...rest} />
-		)
 	}
 }

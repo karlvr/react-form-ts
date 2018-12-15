@@ -15,7 +15,16 @@ interface OwnProps<FORM, K extends keyof FORM> extends Omit<ElementAttributes, '
 
 export default class Radio<FORM, K extends keyof FORM> extends React.Component<OwnProps<FORM, K>> {
 
-	onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+	render() {
+		const { name, group, formState, onNewFormState, onChange, value, ...rest } = this.props
+		const checked = formState.get(name) === value
+
+		return (
+			<input name={group} type="radio" onChange={this.onChange} value={value as any} checked={checked} {...rest} />
+		)
+	}
+
+	private onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
 		const { name } = this.props
 		const elementValue = evt.target.checked
 
@@ -27,14 +36,5 @@ export default class Radio<FORM, K extends keyof FORM> extends React.Component<O
 		} else {
 			this.props.onNewFormState(this.props.formState.set(name, this.props.value), name)
 		}
-	}
-
-	render() {
-		const { name, group, formState, onNewFormState, onChange, value, ...rest } = this.props
-		const checked = formState.get(name) === value
-
-		return (
-			<input name={group} type="radio" onChange={this.onChange} value={value as any} checked={checked} {...rest} />
-		)
 	}
 }

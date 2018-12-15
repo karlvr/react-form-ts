@@ -13,17 +13,17 @@ type ElementValueType = ElementAttributes['value']
 
 export default class InputRaw<FORM> extends React.Component<OwnProps> {
 
-	onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-		const name = evt.target.name
-		const elementValue = evt.target.value
-		this.props.onValue(name, elementValue)
-	}
-
 	render() {
 		const { value, onValue, ...rest } = this.props
 
 		return (
-			<input onChange={this.onChange} value={value || ''} {...rest} />
+			<input onChange={this.onChange} value={value !== undefined ? value : ''} {...rest} />
 		)
+	}
+
+	private onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+		const name = evt.target.name
+		const elementValue = evt.target.value
+		this.props.onValue(name, elementValue)
 	}
 }

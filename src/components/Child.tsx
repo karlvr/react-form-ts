@@ -1,21 +1,17 @@
 import * as React from 'react'
 import { FormState, OnNewFormState } from '../FormState'
-import { ObjectKeys } from '../types';
+import { ObjectKeys, ObjectProps } from '../types';
 
 interface OwnProps<FORM, P extends keyof FORM> {
 	formState: FormState<FORM>
 	name: P
 	defaultValue?: FORM[P]
-	onNewFormState: (newState: FormState<FORM>) => void
-	render: (formState: FormState<FORM[P]>, onNewFormState: OnNewFormState<FORM[P]>) => React.ReactNode
+	onNewFormState: OnNewFormState<FORM>
+	render: (formState: FormState<ObjectProps<FORM>[P]>, onNewFormState: OnNewFormState<FORM[P]>) => React.ReactNode
 	renderEmpty?: () => React.ReactNode
 }
 
-export default class Child<FORM, P extends ObjectKeys<FORM>> extends React.Component<OwnProps<FORM, P>> {
-
-	onNewFormState = (newState: FormState<FORM[P]>) => {
-		this.props.onNewFormState(this.props.formState.mergeProperty(this.props.name, newState.getValues()))
-	}
+export default class Child<FORM extends object, P extends ObjectKeys<FORM>> extends React.Component<OwnProps<FORM, P>> {
 
 	render() {
 		const formState = this.props.formState.subProperty(this.props.name, this.props.defaultValue)
@@ -24,4 +20,9 @@ export default class Child<FORM, P extends ObjectKeys<FORM>> extends React.Compo
 		}
 		return this.props.render(formState, this.onNewFormState)
 	}
+
+	private onNewFormState = (newState: FormState<FORM[P]>) => {
+		this.props.onNewFormState(this.props.formState.mergeProperty(this.props.name, newState.getValues()))
+	}
+	
 }

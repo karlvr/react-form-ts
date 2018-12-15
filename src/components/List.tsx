@@ -25,22 +25,6 @@ export interface ListIterationInfo {
 
 export default class List<FORM, P extends ArrayKeys<FORM>> extends React.Component<OwnProps<FORM, P>> {
 
-	onNewFormState = (index: number, newState: FormState<ArrayProperties<FORM>[P]> | undefined, name?: keyof ArrayProperties<FORM>[P]) => {
-		if (newState === undefined) {
-			this.props.onNewFormState(this.props.formState.splice(this.props.name, index, 1))
-			return
-		}
-		let values = newState.getValues()
-		if (this.props.processChange) {
-			const processedValues = this.props.processChange(index, values, name)
-			if (!processedValues) {
-				return
-			}
-			values = processedValues
-		}
-		this.props.onNewFormState(this.props.formState.mergeIndexProperty(this.props.name, index, values))
-	}
-
 	render() {
 		const array = this.props.formState.get(this.props.name) as any as Array<any>
 		if (!array) {
@@ -76,5 +60,21 @@ export default class List<FORM, P extends ArrayKeys<FORM>> extends React.Compone
 				{this.props.renderAfter && this.props.renderAfter()}
 			</React.Fragment>
 		)
+	}
+
+	private onNewFormState = (index: number, newState: FormState<ArrayProperties<FORM>[P]> | undefined, name?: keyof ArrayProperties<FORM>[P]) => {
+		if (newState === undefined) {
+			this.props.onNewFormState(this.props.formState.splice(this.props.name, index, 1))
+			return
+		}
+		let values = newState.getValues()
+		if (this.props.processChange) {
+			const processedValues = this.props.processChange(index, values, name)
+			if (!processedValues) {
+				return
+			}
+			values = processedValues
+		}
+		this.props.onNewFormState(this.props.formState.mergeIndexProperty(this.props.name, index, values))
 	}
 }

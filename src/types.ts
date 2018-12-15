@@ -13,6 +13,10 @@ export type ObjectKeys<T> = {
 	[K in keyof T]-?: Required<T>[K] extends object ? K : never
 }[keyof T]
 
+export type ObjectProps<T> = {
+	[K in keyof T]-?: Required<T>[K] extends object ? T[K] : never
+}
+
 export type Combined<SOURCE, PATCH> = {
 	[P in keyof SOURCE & keyof PATCH]: SOURCE[P] & PATCH[P]
 }

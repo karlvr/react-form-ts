@@ -15,7 +15,16 @@ type ElementValueType = ElementAttributes['value']
 
 export default class TextArea<FORM, K extends keyof FORM> extends React.Component<OwnProps<FORM, K>> {
 
-	onChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
+	render() {
+		const { name, formState, onNewFormState, onValue, ...rest } = this.props
+		const value = formState.get(name) as {} as ElementValueType
+
+		return (
+			<textarea name={name} onChange={this.onChange} value={value !== undefined ? value : ''} {...rest} />
+		)
+	}
+	
+	private onChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
 		const name = evt.target.name as {} as K
 		const elementValue = evt.target.value
 
@@ -29,13 +38,5 @@ export default class TextArea<FORM, K extends keyof FORM> extends React.Componen
 			this.props.onNewFormState(this.props.formState.set(name, value), name)
 		}
 	}
-
-	render() {
-		const { name, formState, onNewFormState, onValue, ...rest } = this.props
-		const value = formState.get(name) as {} as ElementValueType
-
-		return (
-			<textarea name={name} onChange={this.onChange} value={value || ''} {...rest} />
-		)
-	}
+	
 }

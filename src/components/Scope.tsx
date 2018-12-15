@@ -14,13 +14,13 @@ interface OwnProps<INFORM, OUTFORM> {
 
 export default class Scope<INFORM, OUTFORM> extends React.Component<OwnProps<INFORM, OUTFORM>> {
 
-	onNewFormState = (newState: FormState<OUTFORM>) => {
-		const newParentState = this.props.applyNewFormState(this.props.formState, newState)
-		this.props.onNewFormState(newParentState)
-	}
-
 	render() {
 		const formState = this.props.chooseFormState(this.props.formState)
 		return this.props.render(formState, this.onNewFormState)
+	}
+
+	private onNewFormState = (newState: FormState<OUTFORM>) => {
+		const newParentState = this.props.applyNewFormState(this.props.formState, newState)
+		this.props.onNewFormState(newParentState)
 	}
 }

@@ -14,7 +14,14 @@ interface OwnProps<FORM, P extends keyof FORM> extends Omit<ElementAttributes, '
 
 export default class InputWrapper<FORM, P extends keyof FORM> extends React.Component<OwnProps<FORM, P>> {
 
-	onValueChange = (newValue: FORM[P]) => {
+	render() {
+		const { name, formState, onNewFormState, onValue } = this.props
+		const value = formState.get(name)
+
+		return this.props.children(value, this.onValueChange)
+	}
+
+	private onValueChange = (newValue: FORM[P]) => {
 		if (this.props.onValue) {
 			const newFormState = this.props.onValue(name, newValue)
 			if (newFormState) {
@@ -23,12 +30,5 @@ export default class InputWrapper<FORM, P extends keyof FORM> extends React.Comp
 		} else {
 			this.props.onNewFormState(this.props.formState.set(this.props.name, newValue), name)
 		}
-	}
-
-	render() {
-		const { name, formState, onNewFormState, onValue } = this.props
-		const value = formState.get(name)
-
-		return this.props.children(value, this.onValueChange)
 	}
 }

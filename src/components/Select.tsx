@@ -15,7 +15,18 @@ type ElementValueType = ElementAttributes['value']
 
 export default class Select<FORM, K extends keyof FORM> extends React.Component<OwnProps<FORM, K>> {
 
-	onChange = (evt: React.ChangeEvent<HTMLSelectElement>) => {
+	render() {
+		const { name, formState, onNewFormState, onValue, children, ...rest } = this.props
+		const value = formState.get(name) as {} as ElementValueType
+
+		return (
+			<select name={name} onChange={this.onChange} value={value !== undefined ? value : ''} {...rest}>
+				{children}
+			</select>
+		)
+	}
+
+	private onChange = (evt: React.ChangeEvent<HTMLSelectElement>) => {
 		const name = evt.target.name as {} as K
 		const elementValue = evt.target.options[evt.target.selectedIndex].value
 		
@@ -30,14 +41,4 @@ export default class Select<FORM, K extends keyof FORM> extends React.Component<
 		}
 	}
 
-	render() {
-		const { name, formState, onNewFormState, onValue, children, ...rest } = this.props
-		const value = formState.get(name) as {} as ElementValueType
-
-		return (
-			<select name={name} onChange={this.onChange} value={value || ''} {...rest}>
-				{children}
-			</select>
-		)
-	}
 }

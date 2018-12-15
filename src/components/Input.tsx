@@ -35,7 +35,7 @@ export default class Input<FORM, K extends keyof FORM> extends React.Component<O
 		const value = formState.get(name) as {} as ElementValueType
 
 		return (
-			<input name={name} onChange={this.onChange} value={value || ''} {...rest} />
+			<input name={name} onChange={this.onChange} value={value !== undefined ? value : ''} {...rest} />
 		)
 	}
 }
