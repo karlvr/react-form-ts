@@ -68,6 +68,31 @@ describe('SimpleFormState tests', () => {
 		expect(fsa4.getValues().c.contents).to.equal('Changed')
 	})
 
+	it('object sub should merge and replace whole sub', () => {
+		interface Test1 {
+			nested: {
+				a: number
+				b?: number
+			}
+		}
+
+		const test1: Test1 = {
+			nested: {
+				a: 1,
+				b: 2,
+			}
+		}
+		const fsa = new SimpleFormState(test1)
+		const fsa2 = fsa.subProperty('nested')
+		const fsa3 = fsa2.set('a', 3).set('b', undefined)
+
+		expect(fsa3.getValues().a).to.equal(3)
+		const fsa4 = fsa.mergeProperty('nested', fsa3.getValues())
+		expect(fsa.getValues()).to.deep.equal(test1)
+		expect(fsa4.getValues()).to.not.deep.equal(test1)
+		expect(fsa4.getValues().nested.b).to.equal(undefined)
+	})
+
 	it('array subs should not be mutable', () => {
 		const fsa = new SimpleFormState(a)
 		const fsa2 = fsa.subIndexProperty('bs', 0)
