@@ -10,7 +10,7 @@ interface OwnProps<FORM, K extends keyof FORM> extends Omit<ElementAttributes, '
 	value: FORM[K]
 	formState: FormState<FORM>
 	onFormStateChange: OnFormStateChange<FORM>
-	onValue?: (name: K, value: boolean) => FormStateChange<FORM> | undefined
+	onValue?: (name: K, value: FORM[K]) => FormStateChange<FORM> | undefined
 }
 
 export default class Radio2<FORM, K extends keyof FORM> extends React.Component<OwnProps<FORM, K>> {
@@ -53,8 +53,12 @@ export default class Radio2<FORM, K extends keyof FORM> extends React.Component<
 	}
 
 	private onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+		if (!evt.target.checked) {
+			return
+		}
+
 		const { name } = this.props
-		const elementValue = evt.target.checked
+		const elementValue = this.props.value
 
 		if (this.props.onValue) {
 			const merge = this.props.onValue(name, elementValue)
