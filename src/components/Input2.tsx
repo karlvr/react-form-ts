@@ -16,11 +16,11 @@ type ElementValueType = ElementAttributes['value']
 export default class Input2<FORM, K extends keyof FORM> extends React.Component<OwnProps<FORM, K>> {
 
 	render() {
-		const { name, formState, onValue, onFormStateChange, defaultValue, ...rest } = this.props
+		const { name, formState, onValue, onFormStateChange, ...rest } = this.props
 		const value = formState.get(name) as {} as ElementValueType
 
 		return (
-			<input onChange={this.onChange} value={value !== undefined && value !== '' ? value : defaultValue !== undefined ? defaultValue : ''} {...rest} />
+			<input onChange={this.onChange} value={value !== undefined ? value : ''} {...rest} />
 		)
 	}
 
